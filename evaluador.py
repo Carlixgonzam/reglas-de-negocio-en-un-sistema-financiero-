@@ -2,9 +2,9 @@ from antlr4 import *
 from ReglasFinancierasLexer import ReglasFinancierasLexer
 from ReglasFinancierasParser import ReglasFinancierasParser
 
-# --- Funciones Auxiliares (Lógica del Dominio) ---
+#Funciones Auxiliares 
 
-def calcular_interes(monto, tasa):  # Ejemplo
+def calcular_interes(monto, tasa):  
     return monto * tasa
 
 def contar_transacciones(contexto, cliente_id, periodo, ubicacion):
@@ -17,12 +17,12 @@ def contar_transacciones(contexto, cliente_id, periodo, ubicacion):
         hora_limite = hora_actual - timedelta(hours=1)
         transacciones_periodo = [t for t in transacciones_cliente if datetime.strptime(t['fecha'], '%Y-%m-%d %H:%M:%S') >= hora_limite]
     else:
-        transacciones_periodo = transacciones_cliente #Si no se especifica periodo, se toman todas
+        transacciones_periodo = transacciones_cliente 
 
     transacciones_ubicacion = [t for t in transacciones_periodo if t['ubicacion'] != ubicacion]
     return len(transacciones_ubicacion)
 
-# --- Funciones del Evaluador (sin clase) ---
+# Funciones del Evaluador 
 
 def evaluar_regla(ctx, contexto):
     if ctx.definicion_variable():
@@ -249,7 +249,7 @@ contexto = {
     'historial' : historial_transacciones
 }
 
-# Reglas de ejemplo
+
 reglas = """
 transaccion.monto > 5000 => RECHAZAR;
 cliente.scoreRiesgo < 300 => APROBAR;
@@ -259,13 +259,9 @@ transaccion.paisDestino IN paisesAltoRiesgo => BLOQUEAR;
 contarTransacciones(cliente.id, "1 HORA", transaccion.ubicacion) > 4 => MARCAR_COMO_SOSPECHOSO;
 """
 
-# Ejecutar las reglas
+
 contexto_final = ejecutar_reglas(reglas, contexto)
 
-# Imprimir el estado final de la transacción (para verificar el resultado)
+
 print(contexto_final['transaccion'])
 
-#Para ejecutar este codigo, recuerda que debes de tener el archivo ReglasFinancieras.g4 en la misma carpeta
-#que este archivo, y haber ejecutado el comando:
-# antlr4 -Dlanguage=Python3 ReglasFinancieras.g4
-#Esto generara los archivos ReglasFinancierasLexer.py y ReglasFinancierasParser.py, que son necesarios para ejecutar este codigo.
